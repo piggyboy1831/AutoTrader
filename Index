@@ -1,0 +1,53 @@
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Stock Trading Dashboard</title>
+</head>
+<body>
+    <h1>Stock Trading Dashboard</h1>
+    
+    <section>
+        <h2>Set API Keys</h2>
+        <input type="text" id="apiKey" placeholder="API Key">
+        <input type="text" id="secretKey" placeholder="Secret Key">
+        <button onclick="setKeys()">Set Keys</button>
+    </section>
+
+    <section>
+        <h2>Portfolio</h2>
+        <p>Net worth: <span id="netWorth">$0</span></p>
+        <p>Stocks: <span id="stocks">None</span></p>
+    </section>
+
+    <script>
+        async function setKeys() {
+            const apiKey = document.getElementById('apiKey').value;
+            const secretKey = document.getElementById('secretKey').value;
+
+            try {
+                await fetch('/set-keys', {
+                    method: 'POST',
+                    headers: {
+                        'Content-Type': 'application/json'
+                    },
+                    body: JSON.stringify({ apiKey, secretKey })
+                });
+
+                // Once keys are set, fetch the portfolio
+                const response = await fetch('/portfolio');
+                const data = await response.json();
+
+                document.getElementById('netWorth').textContent = `$${data.equity}`;
+                document.getElementById('stocks').textContent = 'This is a basic example. Fetch positions for more detail.';
+
+            } catch (error) {
+                console.error('Error setting keys or fetching portfolio:', error);
+            }
+        }
+    </script>
+</body>
+</html>
